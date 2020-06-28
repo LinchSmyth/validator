@@ -40,8 +40,8 @@ module Validator
         end
         
         # ensure validator is unique to not assign same validator few times
-        if validations[field].select { |existing_validator| existing_validator.instance_of?(validator_class) }
-          raise ArgumentError, "`#{ validator }` validation already registered on this field"
+        if validations[field].find { |existing_validator| existing_validator.instance_of?(validator_class) }
+          raise ArgumentError, "`#{ validator }` validation already registered on #{ field } field"
         end
         
         validator_class.new(option)
