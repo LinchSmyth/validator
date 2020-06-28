@@ -8,15 +8,6 @@ module Validator
     presence: PresenceValidation
   }
   
-  
-  def valid?
-    raise NotImplementedError
-  end
-  
-  def validate!
-    raise NotImplementedError
-  end
-  
 
   def self.included(base)
     base.instance_variable_set(:@validations, Hash.new { |hh, key| hh[key] = [] })
@@ -49,5 +40,31 @@ module Validator
     end
     
   end
+
+  def valid?
+    raise NotImplementedError
+  end
+
+  def validate!
+    run_validations
+    true
+  end
   
+  
+  private
+  
+  
+  def run_validations
+    each_validator do |attribute, validator|
+      validator.perform_validation(self, attribute)
+    end
+  end
+  
+  # don't like using nested iterations, prefer to create wrapper function for them
+  def each_validator
+    self.class.validations.each do |attribute, validators|
+      validators.each { |validator| yield(attribute, validator) }
+    end
+  end
+
 end
