@@ -39,6 +39,7 @@ module Validator
           raise ArgumentError, "invalid validator `#{ validator }`, valid are: #{ VALIDATORS_MAP.keys }"
         end
         
+        # ensure validator is unique to not assign same validator few times
         if validations[field].select { |existing_validator| existing_validator.instance_of?(validator_class) }
           raise ArgumentError, "`#{ validator }` validation already registered on this field"
         end
