@@ -1,11 +1,13 @@
 require 'validator/version'
 require 'validator/presence_validation'
+require 'validator/format_validation'
 
 module Validator
   ValidationError = Class.new(StandardError)
   
   VALIDATORS_MAP = {
-    presence: PresenceValidation
+    presence: PresenceValidation,
+    format: FormatValidation
   }
   
 
