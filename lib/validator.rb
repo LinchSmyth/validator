@@ -23,7 +23,7 @@ module Validator
     
     def validate(*fields, **options)
       fields.each do |field|
-        validations[field.to_sym].push(*parse_options(options))
+        validations[field.to_sym].push(*parse_options(options, field))
       end
     end
     
@@ -31,12 +31,16 @@ module Validator
     private
     
     
-    def parse_options(options)
+    def parse_options(options, field)
       options.map do |validator, option|
         validator_class = VALIDATORS_MAP[validator]
         
         if validator_class.nil?
           raise ArgumentError, "invalid validator `#{ validator }`, valid are: #{ VALIDATORS_MAP.keys }"
+        end
+        
+        if validations[field].select { |existing_validator| existing_validator.instance_of?(validator_class) }
+          raise ArgumentError, "`#{ validator }` validation already registered on this field"
         end
         
         validator_class.new(option)
