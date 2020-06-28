@@ -54,7 +54,6 @@ class User
   
   # allows to pass several fields at a time
   validate :first_name, :last_name, presence: true
-  validate :first_name, :last_name, presence: true
   validate :phone, format: /\A\+\d{3}-\d{3}-\d{3}\z/
   # also supports different validations on single field
   validate :inviter, presence: true, type: User
