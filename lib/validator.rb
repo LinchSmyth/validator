@@ -1,7 +1,12 @@
 require 'validator/version'
+require 'validator/presence_validation'
 
 module Validator
   ValidationError = Class.new(StandardError)
+  
+  VALIDATORS_MAP = {
+    presence: PresenceValidation
+  }
   
   
   def valid?
@@ -22,8 +27,8 @@ module Validator
     attr_accessor :validations
     
     def validate(*fields, **options)
-      fields.each(field) do |field|
-        validations[field.to_sym] << parse_options(options)
+      fields.each do |field|
+        validations[field.to_sym].push(*parse_options(options))
       end
     end
     
@@ -32,7 +37,15 @@ module Validator
     
     
     def parse_options(options)
-      raise NotImplementedError
+      options.map do |validator, option|
+        validator_class = VALIDATORS_MAP[validator]
+        
+        if validator_class.nil?
+          raise ArgumentError, "invalid validator `#{ validator }`, valid are: #{ VALIDATORS_MAP.keys }"
+        end
+        
+        validator_class.new(option)
+      end
     end
     
   end
