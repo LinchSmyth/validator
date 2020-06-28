@@ -42,7 +42,9 @@ module Validator
   end
 
   def valid?
-    raise NotImplementedError
+    validate!
+  rescue ValidationError
+    false
   end
 
   def validate!
